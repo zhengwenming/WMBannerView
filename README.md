@@ -6,6 +6,9 @@
 /*
      网络图片测试
      */
+     
+     
+     
     NSArray *URLArray = @[@"http://farm2.staticflickr.com/1709/24157242566_98d0192315_m.jpg",
                           @"http://farm2.staticflickr.com/1715/23815656639_ef86cf1498_m.jpg",
                           @"http://farm2.staticflickr.com/1455/23888379640_edf9fce919_m.jpg"];
