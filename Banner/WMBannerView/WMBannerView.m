@@ -8,276 +8,320 @@
 
 #import "UIImageView+WebCache.h"
 #import "WMBannerView.h"
-
-@interface WMBannerView ()
-//容器
-@property(nonatomic,strong)UIScrollView     *scrollView;
-/* 滚动圆点 **/
-@property(nonatomic,strong)UIPageControl    *pageControl;
-/* 定时器 **/
-@property(nonatomic,strong)NSTimer          *animationTimer;
-/* 当前index **/
-@property(nonatomic,assign)NSInteger        currentPageIndex;
-/* 所有的图片数组 **/
-@property(nonatomic,strong)NSMutableArray   *imageArray;
-/* 当前图片数组，永远只存储三张图 **/
-@property(nonatomic,strong)NSMutableArray   *currentArray;
-/* block方式接收回调 */
-@property(nonatomic,copy)TapActionBlock block;
+@interface WMBannerView (){
+    NSTimer *_timer;
+    NSTimeInterval _second;
+}
 @end
 
 @implementation WMBannerView
 
--(instancetype)initWithFrame:(CGRect)frame withURLArrayOrImagesArray:(NSArray *)dataArray{
-    self = [super initWithFrame:frame];
-    if (self) {
-        self.dataArray = dataArray;
-        self.autoresizesSubviews = YES;
-        self.scrollView = [[UIScrollView alloc] initWithFrame:self.bounds];
-        self.scrollView.contentMode = UIViewContentModeCenter;
-        self.scrollView.contentSize = CGSizeMake(3 *frame.size.width, frame.size.height);
-        self.scrollView.delegate = self;
-        self.scrollView.contentOffset = CGPointMake(frame.size.width, 0);
-        self.scrollView.pagingEnabled = YES;
-        self.scrollView.showsHorizontalScrollIndicator = NO;
-        self.scrollView.showsVerticalScrollIndicator = NO;
-        [self addSubview:self.scrollView];
+
++ (instancetype)wmBannerViewWithFrame:(CGRect)frame
+                    autoPlayWithDelay:(NSTimeInterval)second
+                          modelsArray:(NSArray *)modelsArray
+                 placeholderImageName:(NSString *)placeholderImageName
+                imageViewsContentMode:(UIViewContentMode)imageViewsContentMode
+                      clickedCallBack:(void (^)(int clickedIndex))clickedCallBack
+                     scrolledCallBack:(void(^)(int scrolledIndex))scrolledCallBack
+{
+    WMBannerView *coverView = [[WMBannerView alloc] initWithFrame:frame];
+    coverView.models = modelsArray;
+    coverView.placeholderImageName = placeholderImageName;
+    coverView.imageViewContentMode = imageViewsContentMode;
+    coverView.clickedCallBack = clickedCallBack;
+    coverView.scrolledCallBack = scrolledCallBack;
+    
+   
+    if (second==0) { //不自动滚动，手动滚动
+
+    }else{//second秒自动滚动，
+        [coverView setAutoPlayWithDelay:second];
+    }
+    [coverView updateView];
+    return coverView;
+}
+
+
+
+-(instancetype)initWithFrame:(CGRect)frame
+           autoPlayWithDelay:(NSTimeInterval)second
+                 modelsArray:(NSArray *)modelsArray
+        placeholderImageName:(NSString *)placeholderImageName
+       imageViewContentModel:(UIViewContentMode)imageViewContentMode
+             clickedCallBack:(void(^)(int clickedIndex))clickedCallBack
+            scrolledCallBack:(void(^)(int scrolledIndex))scrolledCallBack{
+    if (self = [super initWithFrame:frame])
+    {
+        self.frame = frame;
+        self.models = modelsArray;
+        self.placeholderImageName = placeholderImageName;
+        self.imageViewContentMode = imageViewContentMode;
+        self.clickedCallBack = clickedCallBack;
+        self.scrolledCallBack = scrolledCallBack;
         
-        //设置分页显示的圆点
-        _pageControl = [[UIPageControl alloc] init];
-        _pageControl.alpha = 0.8;
-        _pageControl.currentPageIndicatorTintColor = [UIColor redColor];
-        _pageControl.pageIndicatorTintColor = [UIColor whiteColor];
-        [self addSubview:_pageControl];
-        
-        //点击事件
-        UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tap)];
-        [self addGestureRecognizer:tapGesture];
-        
-        //默认五秒钟循环播放
-        self.animationDuration = 5;
-        //默认居中
-        self.pageContolAliment = WMPageContolAlignmentCenter;
-        //默认第一张
-        self.currentPageIndex = 0;
+        [self createUI];
+        //设置默认2s滚动一次
+        if (second==0) { //不自动滚动，手动滚动
+
+            
+        }else{//second秒自动滚动，
+            [self setAutoPlayWithDelay:second];
+        }
+        [self updateView];
     }
     return self;
 }
 
--(void)layoutSubviews{
-    [super layoutSubviews];
-    self.scrollView.frame = self.bounds;
-}
-
-
--(void)setPageContolAliment:(WMPageContolAlignment)pageContolAliment{
-    _pageControlAlignment = pageContolAliment;
-    _pageControl.hidden = NO;
-    switch (pageContolAliment) {
-        case WMPageContolAlignmentCenter:
-        {
-            _pageControl.frame = CGRectMake(0, CGRectGetHeight(self.scrollView.frame) - 20, CGRectGetWidth(self.scrollView.frame), 10);
-        }
-            break;
-        case WMPageContolAlignmentRight:
-        {
-            CGSize size = CGSizeMake(self.dataArray.count * 10 * 1.2, 10);
-            CGFloat x = self.scrollView.frame.size.width - size.width - 10;
-            CGFloat y = self.scrollView.frame.size.height - 20;
-            _pageControl.frame = CGRectMake(x, y, size.width, size.height);
-        }
-            break;
-        case WMPageContolAlignmentNone:
-            _pageControl.hidden = YES;
-            break;
-            
-        default:
-            break;
-    }
-}
-
-
--(void)setAnimationDuration:(NSTimeInterval)animationDuration{
-    _animationDuration = animationDuration;
-    
-    [self.animationTimer invalidate];
-    self.animationTimer = nil;
-    
-    if (animationDuration <= 0) {
-        return;
-    }
-    
-    self.animationTimer = [NSTimer scheduledTimerWithTimeInterval:_animationDuration
-                                                           target:self
-                                                         selector:@selector(animationTimerDidFired:)
-                                                         userInfo:nil
-                                                          repeats:YES];
-    
-    [self.animationTimer setFireDate:[NSDate distantFuture]];
-}
-
--(void)downLoadImage{
-    if (self.dataArray && self.dataArray.count > 0) {
-        if ([self.dataArray.firstObject respondsToSelector:@selector(hasPrefix:)]) {
-            if ([self.dataArray.firstObject hasPrefix:@"http"]) {//网络图片
-                self.imageArray = [NSMutableArray array];
-                __weak typeof(self) weak = self;
-                [self.dataArray enumerateObjectsUsingBlock:^(NSString *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-                    UIImageView *imageView = [[UIImageView alloc]initWithFrame:self.scrollView.frame];
-                    [imageView sd_setImageWithURL:[NSURL URLWithString:obj] placeholderImage:self.placeHoldImage];
-                    [weak.imageArray addObject:imageView];
-                }];
-                _pageControl.numberOfPages = self.dataArray.count;
-                [self configContentViews];
-                
-            }
-        }
-        else{//本地图片
-            self.imageArray = [NSMutableArray array];
-            __weak typeof(self) weak = self;
-            [self.dataArray enumerateObjectsUsingBlock:^(UIImage *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-                UIImageView *imageView = [[UIImageView alloc]initWithFrame:self.scrollView.frame];
-                imageView.image = obj;
-                [weak.imageArray addObject:imageView];
-            }];
-            _pageControl.numberOfPages = self.dataArray.count;
-            [self configContentViews];
-        }
-    }
-}
-
-#pragma mark - 私有函数
-
-- (void)configContentViews
+- (id)initWithFrame:(CGRect)frame
 {
-    [self.scrollView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
-    
-    NSInteger previousPageIndex = [self getValidNextPageIndexWithPageIndex:_currentPageIndex - 1];
-    NSInteger rearPageIndex = [self getValidNextPageIndexWithPageIndex:_currentPageIndex + 1];
-    
-    self.currentArray = (_currentArray?:[NSMutableArray new]);
-    
-    _currentArray.count == 0 ?:[_currentArray removeAllObjects];
-    
-    if (_imageArray) {
-        if (_imageArray.count >= 3) {
-            [_currentArray addObject:_imageArray[previousPageIndex]];
-            [_currentArray addObject:_imageArray[_currentPageIndex]];
-            [_currentArray addObject:_imageArray[rearPageIndex]];
-        }
-        else{
-            [self getImageFromArray:_imageArray[previousPageIndex]];
-            [self getImageFromArray:_imageArray[_currentPageIndex]];
-            [self getImageFromArray:_imageArray[rearPageIndex]];
-        }
+    if (self = [super initWithFrame:frame])
+    {
+        [self createUI];
     }
-    
-    [_currentArray enumerateObjectsUsingBlock:^(UIImageView *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        obj.userInteractionEnabled = YES;
-        CGRect rightRect = obj.frame;
-        rightRect.origin = CGPointMake(CGRectGetWidth(self.frame) * idx, 0);
-        obj.frame = rightRect;
-        [self.scrollView addSubview:obj];
-    }];
-    
-    [self.scrollView setContentOffset:CGPointMake(CGRectGetWidth(self.scrollView.frame), 0)];
+    return self;
 }
 
-- (NSInteger)getValidNextPageIndexWithPageIndex:(NSInteger)currentPageIndex;
+// 创建UI
+- (void)createUI
 {
-    if(currentPageIndex == -1){
-        return self.dataArray.count - 1;
-    }
-    else if (currentPageIndex == self.dataArray.count){
-        return 0;
+    _scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
+    _scrollView.delegate = self;
+    _scrollView.pagingEnabled = YES;
+    _scrollView.showsHorizontalScrollIndicator = NO;
+    _scrollView.showsVerticalScrollIndicator = NO;
+    _scrollView.backgroundColor = [UIColor blackColor];
+    [self addSubview:_scrollView];
+    
+    _pageControl = [[UIPageControl alloc] initWithFrame:CGRectMake(self.frame.size.width/2-100/2, self.frame.size.height-45, 100,15)];
+    _pageControl.userInteractionEnabled = YES;
+    _pageControl.pageIndicatorTintColor=[UIColor whiteColor];
+    _pageControl.currentPageIndicatorTintColor=[UIColor redColor];
+    
+    _pageControl.layer.cornerRadius=8;
+    [self addSubview:_pageControl];
+}
+
+// 更新视图
+- (void)updateView
+{
+    if(_modelsArray.count <= 1)
+    {
+        [self.pageControl setHidden:YES];
+        _scrollView.scrollEnabled = NO;
     }
     else
-        return currentPageIndex;
+    {
+        [self.pageControl setHidden:NO];
+        _scrollView.scrollEnabled = YES;
+    }
+    
+    _scrollView.contentSize = CGSizeMake((_modelsArray.count+2)*_scrollView.frame.size.width, _scrollView.frame.size.height);
+    _scrollView.contentOffset = CGPointMake(self.frame.size.width, 0);
+    
+    // 清除所有滚动视图
+    for (UIView *view in _scrollView.subviews)
+    {
+        [view removeFromSuperview];
+    }
+    
+    WMBannerModel *model = nil;
+    for (int i = 0; i<_modelsArray.count+2; i++)
+    {
+        if (i == 0)
+        {
+            model = [_modelsArray lastObject];
+        }
+        else if(i == _modelsArray.count+1)
+        {
+            model = [_modelsArray firstObject];
+        }
+        else
+        {
+            model = [_modelsArray objectAtIndex:i-1];
+        }
+        
+        // create imageView
+        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(i*_scrollView.frame.size.width, 0, _scrollView.frame.size.width, _scrollView.frame.size.height)];
+        
+        
+        
+        
+        imageView.userInteractionEnabled = YES;
+        imageView.contentMode = _imageViewContentMode;
+        imageView.tag = i-1;
+        
+        // 默认执行SDWebImage的缓存方法
+        
+        if ([model.URLOrImage isKindOfClass:[NSString class]]) {
+            if ([model.URLOrImage rangeOfString:@"http"].location !=NSNotFound) {
+                [imageView sd_setImageWithURL:[NSURL URLWithString:model.URLOrImage] placeholderImage:[UIImage imageNamed:_placeholderImageName]];
+            }
+
+        }else if([model.URLOrImage isKindOfClass:[UIImage class]]){
+            imageView.image = (UIImage *)model.URLOrImage;
+        }
+        
+        [_scrollView addSubview:imageView];
+        
+        if (model.title)
+        {
+            // create title label
+            UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, imageView.frame.size.height-20, imageView.frame.size.width, 20)];
+            titleLabel.text = model.title;
+            titleLabel.textAlignment = NSTextAlignmentCenter;
+            titleLabel.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.5];
+            titleLabel.textColor = [UIColor whiteColor];
+            titleLabel.font = [UIFont boldSystemFontOfSize:12.0f];
+            [imageView addSubview:titleLabel];
+        }
+        
+        if (i>0 &&i<_modelsArray.count+1)
+        {
+            UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(imageViewClicked:)];
+            [imageView addGestureRecognizer:tap];
+        }
+    }
+    
+    // 设置titleLabel和pageControl的相关内容数据
+    if (_modelsArray.count>0)
+    {
+        _pageControl.numberOfPages = _modelsArray.count;
+        [_pageControl addTarget:self action:@selector(pageControlClicked:) forControlEvents:UIControlEventValueChanged];
+    }
+   
 }
 
-/**
- *  解决小于三个图片显示的bug
- *  @param imageView 原始图
- */
--(void)getImageFromArray:(UIImageView *)imageView{
-    //开辟自动释放池
-    @autoreleasepool {
-        UIImageView *tempImage = [[UIImageView alloc]initWithFrame:imageView.frame];
-        tempImage.image = imageView.image;
-        [_currentArray addObject:tempImage];
+// 图片轻敲手势事件
+- (void)imageViewClicked:(UITapGestureRecognizer *)recognizer
+{
+    int index = (int)recognizer.view.tag;
+    if (_clickedCallBack) _clickedCallBack(index);
+}
+
+// pageControl修改事件
+- (void)pageControlClicked:(UIPageControl *)pageControl
+{
+    [self scrollViewScrollToPageIndex:pageControl.currentPage+1];
+}
+
+// 设置自动播放
+- (void)setAutoPlayWithDelay:(NSTimeInterval)second
+{
+    if ([_timer isValid])
+    {
+        [_timer invalidate];
+    }
+    
+    _second = second;
+    _timer = [NSTimer scheduledTimerWithTimeInterval:second target:self selector:@selector(scrollViewAutoScrolling) userInfo:nil repeats:YES];
+}
+
+// 自动滚动
+- (void)scrollViewAutoScrolling
+{
+    CGPoint point;
+    point = _scrollView.contentOffset;
+    point.x += _scrollView.frame.size.width;
+    
+    [self animationScrollWithPoint:point];
+}
+
+// 滚动到指定的页面
+- (void)scrollViewScrollToPageIndex:(NSInteger)page
+{
+    CGPoint point = CGPointMake(_scrollView.frame.size.width*page, 0);
+    
+    [self animationScrollWithPoint:point];
+}
+
+// 滚动到指点的point
+- (void)animationScrollWithPoint:(CGPoint)point
+{
+    // 判断是否是需要动画
+    if (_animationOption != UIViewAnimationOptionTransitionNone)
+    {
+        _scrollView.contentOffset = point;
+        [self scrollViewDidEndDecelerating:_scrollView];
+        [UIView transitionWithView:_scrollView duration:0.7 options:_animationOption animations:nil completion:nil];
+    }
+    else
+    {
+        [UIView animateWithDuration:0.5 animations:^{
+            _scrollView.contentOffset = point;
+        }completion:^(BOOL finished) {
+            if (finished) {
+                [self scrollViewDidEndDecelerating:_scrollView];
+            }
+        }];
     }
 }
 
+-(void)setClickedCallBack:(void (^)(int))clickedCallBack{
+    _clickedCallBack = [clickedCallBack copy];
+    if(_clickedCallBack) _clickedCallBack(0);
+}
+-(void)setScrolledCallBack:(void (^)(int))scrolledCallBack{
+    _scrolledCallBack = [scrolledCallBack copy];
+    if(_scrolledCallBack) _scrolledCallBack(0);
+}
 
-#pragma mark - UIScrollViewDelegate
+
+#pragma mark-
+#pragma mark- UIScrollViewDelegate
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
 {
-    [self.animationTimer setFireDate:[NSDate distantFuture]];
-}
-
-- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
-{
-    [self.animationTimer setFireDate:[NSDate dateWithTimeIntervalSinceNow:self.animationDuration]];
-}
-
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView
-{
-    int contentOffsetX = scrollView.contentOffset.x;
-    if(contentOffsetX >= (2 * CGRectGetWidth(scrollView.frame))) {
-        self.currentPageIndex = [self getValidNextPageIndexWithPageIndex:self.currentPageIndex + 1];
-        _pageControl.currentPage = _currentPageIndex;
-        [self configContentViews];
+    // 停止自动播放
+    if ([_timer isValid])
+    {
+        [_timer setFireDate:[NSDate distantFuture]];
     }
-    if(contentOffsetX <= 0) {
-        self.currentPageIndex = [self getValidNextPageIndexWithPageIndex:self.currentPageIndex - 1];
-        _pageControl.currentPage = _currentPageIndex;
-        [self configContentViews];
-    }
-    
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 {
-    [scrollView setContentOffset:CGPointMake(CGRectGetWidth(scrollView.frame), 0) animated:YES];
-}
-
-
-#pragma mark - 循环事件
-- (void)animationTimerDidFired:(NSTimer *)timer
-{
-    CGPoint newOffset = CGPointMake(self.scrollView.contentOffset.x + CGRectGetWidth(self.scrollView.frame), self.scrollView.contentOffset.y);
-    [self.scrollView setContentOffset:newOffset animated:YES];
-}
-
-#pragma mark - 响应事件
-- (void)tap
-{
-    if (self.block) {
-        self.block(self.currentPageIndex);
+    // 设置伪循环滚动
+    if (scrollView.contentOffset.x <= 0)
+    {
+        scrollView.contentOffset = CGPointMake(scrollView.contentSize.width-2*scrollView.frame.size.width, 0);
+        
     }
-}
-
-
-#pragma mark - 开始滚动
--(void)startWithTapActionBlock:(TapActionBlock)block{
-    [self.animationTimer setFireDate:[NSDate date]];
+    else if(scrollView.contentOffset.x >= scrollView.contentSize.width-scrollView.frame.size.width)
+    {
+        scrollView.contentOffset = CGPointMake(scrollView.frame.size.width, 0);
+    }
     
-    [self downLoadImage];
+    int currentPage = scrollView.contentOffset.x/self.frame.size.width-1;
+    _pageControl.currentPage = currentPage;
     
-    self.block = block;
-}
-#pragma mark - 停止滚动
--(void)stop{
-    [self.animationTimer invalidate];
+    // 恢复自动播放
+    if ([_timer isValid])
+    {
+        [_timer setFireDate:[NSDate dateWithTimeIntervalSinceNow:_second]];
+    }
+    
+    if (_scrolledCallBack) _scrolledCallBack(currentPage);
 }
 
-- (void)dealloc
+- (void)resetCoverView
 {
-    self.animationTimer = nil;
-    self.imageArray = nil;
-    self.dataArray = nil;
-    self.scrollView = nil;
+    static BOOL flag = NO;
+    if (flag)
+    {
+        CGPoint point = CGPointMake(_scrollView.frame.size.width, 0);
+        _scrollView.contentOffset = point;
+        [self scrollViewDidEndDecelerating:_scrollView];
+    }
+    
+    flag = YES;
+}
+
+#pragma mark-
+- (void)setModels:(NSArray *)models
+{
+    _modelsArray = models;
+    [self updateView];
 }
 
 @end

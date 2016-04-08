@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7067CC6A1CB763AD00A2D54D /* WMBannerModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 7067CC691CB763AD00A2D54D /* WMBannerModel.m */; };
+		7067CC721CB7B8AE00A2D54D /* TestViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7067CC701CB7B8AE00A2D54D /* TestViewController.m */; };
+		7067CC731CB7B8AE00A2D54D /* TestViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7067CC711CB7B8AE00A2D54D /* TestViewController.xib */; };
 		706823601C3B725B00EC585E /* CollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7068235E1C3B725B00EC585E /* CollectionViewCell.m */; };
 		706823611C3B725B00EC585E /* CollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7068235F1C3B725B00EC585E /* CollectionViewCell.xib */; };
 		70D1746A1C39FF8F00902CA0 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 70D174691C39FF8F00902CA0 /* main.m */; };
@@ -45,6 +48,11 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		7067CC681CB763AD00A2D54D /* WMBannerModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WMBannerModel.h; sourceTree = "<group>"; };
+		7067CC691CB763AD00A2D54D /* WMBannerModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WMBannerModel.m; sourceTree = "<group>"; };
+		7067CC6F1CB7B8AE00A2D54D /* TestViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestViewController.h; sourceTree = "<group>"; };
+		7067CC701CB7B8AE00A2D54D /* TestViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestViewController.m; sourceTree = "<group>"; };
+		7067CC711CB7B8AE00A2D54D /* TestViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TestViewController.xib; sourceTree = "<group>"; };
 		7068235D1C3B725B00EC585E /* CollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CollectionViewCell.h; sourceTree = "<group>"; };
 		7068235E1C3B725B00EC585E /* CollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CollectionViewCell.m; sourceTree = "<group>"; };
 		7068235F1C3B725B00EC585E /* CollectionViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CollectionViewCell.xib; sourceTree = "<group>"; };
@@ -154,6 +162,9 @@
 				7068235F1C3B725B00EC585E /* CollectionViewCell.xib */,
 				70D174D71C3A831100902CA0 /* CVOfNetworkImageViewController.h */,
 				70D174D81C3A831100902CA0 /* CVOfNetworkImageViewController.m */,
+				7067CC6F1CB7B8AE00A2D54D /* TestViewController.h */,
+				7067CC701CB7B8AE00A2D54D /* TestViewController.m */,
+				7067CC711CB7B8AE00A2D54D /* TestViewController.xib */,
 				70D174DA1C3A834B00902CA0 /* WMBannerView */,
 				70D174711C39FF9000902CA0 /* Main.storyboard */,
 				70D174741C39FF9000902CA0 /* Assets.xcassets */,
@@ -232,6 +243,8 @@
 			children = (
 				70D174DB1C3A834B00902CA0 /* WMBannerView.h */,
 				70D174DC1C3A834B00902CA0 /* WMBannerView.m */,
+				7067CC681CB763AD00A2D54D /* WMBannerModel.h */,
+				7067CC691CB763AD00A2D54D /* WMBannerModel.m */,
 			);
 			path = WMBannerView;
 			sourceTree = "<group>";
@@ -296,6 +309,7 @@
 				70D174C51C3A574E00902CA0 /* ad5.jpg in Resources */,
 				70D174C31C3A574E00902CA0 /* ad3.jpg in Resources */,
 				70D174C71C3A59DE00902CA0 /* placeholderImage.png in Resources */,
+				7067CC731CB7B8AE00A2D54D /* TestViewController.xib in Resources */,
 				70D174C11C3A574E00902CA0 /* ad1.jpg in Resources */,
 				706823611C3B725B00EC585E /* CollectionViewCell.xib in Resources */,
 				70D174781C39FF9000902CA0 /* LaunchScreen.storyboard in Resources */,
@@ -337,7 +351,9 @@
 				706823601C3B725B00EC585E /* CollectionViewCell.m in Sources */,
 				70D174D61C3A82FC00902CA0 /* CVOfLocalImageViewController.m in Sources */,
 				70D174DD1C3A834B00902CA0 /* WMBannerView.m in Sources */,
+				7067CC721CB7B8AE00A2D54D /* TestViewController.m in Sources */,
 				70D174D31C3A810400902CA0 /* BannerOfNetworkImageViewController.m in Sources */,
+				7067CC6A1CB763AD00A2D54D /* WMBannerModel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

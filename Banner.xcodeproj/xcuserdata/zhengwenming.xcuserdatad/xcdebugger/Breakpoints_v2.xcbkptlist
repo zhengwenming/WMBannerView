@@ -36,27 +36,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Banner/ViewController.m"
-            timestampString = "473664305.624809"
+            timestampString = "481802659.338327"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "78"
-            endingLineNumber = "78"
-            landmarkName = "-tableView:didSelectRowAtIndexPath:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Banner/ViewController.m"
-            timestampString = "473664305.624809"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "82"
-            endingLineNumber = "82"
+            startingLineNumber = "95"
+            endingLineNumber = "95"
             landmarkName = "-tableView:didSelectRowAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
@@ -68,11 +52,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Banner/CVOfLocalImageViewController.m"
-            timestampString = "473660849.045253"
+            timestampString = "481802336.950037"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "52"
-            endingLineNumber = "52"
+            startingLineNumber = "60"
+            endingLineNumber = "60"
             landmarkName = "-initCollectionView"
             landmarkType = "5">
          </BreakpointContent>
@@ -84,11 +68,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Banner/CVOfLocalImageViewController.m"
-            timestampString = "473660849.045253"
+            timestampString = "481802336.950037"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "48"
-            endingLineNumber = "48"
+            startingLineNumber = "56"
+            endingLineNumber = "56"
             landmarkName = "-viewDidLoad"
             landmarkType = "5">
          </BreakpointContent>
@@ -116,11 +100,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Banner/CVOfLocalImageViewController.m"
-            timestampString = "473662008.845688"
+            timestampString = "481802336.950037"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "67"
-            endingLineNumber = "67"
+            startingLineNumber = "75"
+            endingLineNumber = "75"
             landmarkName = "-numberOfSectionsInCollectionView:"
             landmarkType = "5">
          </BreakpointContent>
@@ -132,11 +116,27 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Banner/CVOfLocalImageViewController.m"
-            timestampString = "473662008.845688"
+            timestampString = "481802336.950037"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "70"
-            endingLineNumber = "70"
+            startingLineNumber = "78"
+            endingLineNumber = "78"
+            landmarkName = "-numberOfSectionsInCollectionView:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Banner/CVOfLocalImageViewController.m"
+            timestampString = "481802336.950037"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "81"
+            endingLineNumber = "81"
             landmarkName = "-collectionView:numberOfItemsInSection:"
             landmarkType = "5">
          </BreakpointContent>
@@ -148,12 +148,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Banner/CVOfLocalImageViewController.m"
-            timestampString = "473662008.845688"
+            timestampString = "481802336.950037"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "73"
-            endingLineNumber = "73"
-            landmarkName = "-collectionView:cellForItemAtIndexPath:"
+            startingLineNumber = "105"
+            endingLineNumber = "105"
+            landmarkName = "-collectionView:layout:insetForSectionAtIndex:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -163,14 +163,24 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Banner/CVOfLocalImageViewController.m"
-            timestampString = "473662008.845688"
+            filePath = "Banner/WMBannerView/WMBannerView.m"
+            timestampString = "481802336.950037"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "97"
-            endingLineNumber = "97"
-            landmarkName = "-collectionView:layout:insetForSectionAtIndex:"
+            startingLineNumber = "59"
+            endingLineNumber = "59"
+            landmarkName = "-initWithFrame:autoPlayWithDelay:modelsArray:placeholderImageName:imageViewContentModel:clickedCallBack:scrolledCallBack:"
             landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.ExceptionBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            scope = "0"
+            stopOnStyle = "0">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

@@ -23,6 +23,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    NSMutableArray *dataSource = [[NSMutableArray alloc]init];
+
     /*
      本地图片测试
      */
@@ -31,16 +33,27 @@
                              [UIImage imageNamed:@"ad3.jpg"],
                              [UIImage imageNamed:@"ad4.jpg"],
                              [UIImage imageNamed:@"ad5.jpg"]];
-    wmView = [[WMBannerView alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.width*3/4) withURLArrayOrImagesArray:imagesArray];
-    wmView.pageControlAlignment = WMPageContolAlignmentCenter;
-    wmView.animationDuration = 1.0;
-    [wmView startWithTapActionBlock:^(NSInteger index) {
-        NSLog(@"点击了第%@张",@(index));
-    }];
+    for (UIImage *image in imagesArray) {
+        WMBannerModel *model = [[WMBannerModel alloc]init];
+        model.URLOrImage = image;
+        model.title = [NSString stringWithFormat:@"我是第%ld张",[imagesArray indexOfObject:image]];
+        [dataSource addObject:model];
+    }
+    wmView = [WMBannerView wmBannerViewWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.width*3/4) autoPlayWithDelay:0 modelsArray:dataSource placeholderImageName:nil imageViewsContentMode:UIViewContentModeScaleToFill
+                                 clickedCallBack:^(int clickedIndex) {
+                                     NSLog(@"ClickdCallBlock %d",clickedIndex);
+                                     
+                                 }
+                                scrolledCallBack:^(int scrolledIndex) {
+                                    NSLog(@"ScrolledCallBlock %d",scrolledIndex);
+                                }];
     
+
     [self initTable];
 }
-
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+}
 -(void)initTable{
     table = [[UITableView alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height) style:UITableViewStylePlain];
     table.dataSource = self;
@@ -66,6 +79,7 @@
 }
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
 }
 
 @end
