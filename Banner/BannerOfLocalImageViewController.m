@@ -42,7 +42,7 @@
     wmView = [WMBannerView wmBannerViewWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.width*3/4) autoPlayWithDelay:0 modelsArray:dataSource placeholderImageName:nil imageViewsContentMode:UIViewContentModeScaleToFill
                                  clickedCallBack:^(int clickedIndex) {
                                      NSLog(@"ClickdCallBlock %d",clickedIndex);
-                                     
+                                     [self.navigationController pushViewController:[UIViewController new] animated:YES];
                                  }
                                 scrolledCallBack:^(int scrolledIndex) {
                                     NSLog(@"ScrolledCallBlock %d",scrolledIndex);

@@ -257,10 +257,7 @@
     }
 }
 
--(void)setClickedCallBack:(void (^)(int))clickedCallBack{
-    _clickedCallBack = [clickedCallBack copy];
-    if(_clickedCallBack) _clickedCallBack(0);
-}
+
 -(void)setScrolledCallBack:(void (^)(int))scrolledCallBack{
     _scrolledCallBack = [scrolledCallBack copy];
     if(_scrolledCallBack) _scrolledCallBack(0);
